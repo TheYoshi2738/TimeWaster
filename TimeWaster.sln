@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TimeWaster.Web", "TimeWaster.Web\TimeWaster.Web.csproj", "{B0668FF5-A72D-4C31-A55A-56867FF08041}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TimeWaster.Core", "TimeWaster.Core\TimeWaster.Core.csproj", "{DC513F25-D96E-41CB-B601-A8046B97AFCD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TimeWaster.Data", "TimeWaster.Data\TimeWaster.Data.csproj", "{9B139B07-5E80-4955-A024-E33E0C3D7B3A}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{B0668FF5-A72D-4C31-A55A-56867FF08041}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B0668FF5-A72D-4C31-A55A-56867FF08041}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B0668FF5-A72D-4C31-A55A-56867FF08041}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B0668FF5-A72D-4C31-A55A-56867FF08041}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DC513F25-D96E-41CB-B601-A8046B97AFCD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DC513F25-D96E-41CB-B601-A8046B97AFCD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DC513F25-D96E-41CB-B601-A8046B97AFCD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DC513F25-D96E-41CB-B601-A8046B97AFCD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9B139B07-5E80-4955-A024-E33E0C3D7B3A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9B139B07-5E80-4955-A024-E33E0C3D7B3A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9B139B07-5E80-4955-A024-E33E0C3D7B3A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9B139B07-5E80-4955-A024-E33E0C3D7B3A}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
