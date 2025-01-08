@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using TimeWaster.Core;
+using TimeWaster.Core.Services;
+using TimeWaster.Core.Models;
 using TimeWaster.Web.Controllers.Intervals.Dto;
 
 namespace TimeWaster.Web.Controllers.Intervals;
@@ -8,38 +9,100 @@ namespace TimeWaster.Web.Controllers.Intervals;
 [Route("intervals")]
 public class IntervalController : ControllerBase
 {
-    private IIntervalRepository _repository;
-    
-    public IntervalController(IIntervalRepository repository)
+    private readonly IntervalService _intervalService;
+    private readonly UserService _userService;
+
+    public IntervalController(IntervalService intervalService, UserService userService)
     {
-        _repository = repository;
+        _intervalService = intervalService;
+        _userService = userService;
     }
-    
-    [HttpGet("")]
+
+    [HttpGet]
     public IEnumerable<Interval> GetAll()
     {
-        return _repository.GetAll();
+        var intervals = _intervalService.GetAll();
+        Ok(intervals);
+        return intervals;
     }
-    
+
     [HttpGet("{id:guid}")]
-    public Interval? Get(Guid id)
+    public ActionResult<Interval?> Get(Guid id)
     {
-        return _repository.Get(id);
+        var interval = _intervalService.Get(id);
+        if (interval is null)
+        {
+            return NotFound("Interval not found");
+        }
+
+        Ok(interval);
+        return interval;
     }
-    
+
     [HttpPost("create")]
-    public Interval? Create(IntervalDto intervalDto)
+    public ActionResult<Interval?> Create([FromBody] IntervalCreateDto intervalDto, Guid userId)
     {
-        var interval = new Interval();
-        interval.SetName(intervalDto.Name);
-        _repository.Create(interval);
-        return interval;
+        if (_userService.Get(userId) is null)
+        {
+            return BadRequest("User not found");
+        }
+
+        var interval = Interval.Create(userId, intervalDto.StartTime, intervalDto.Name, intervalDto.EndTime);
+
+        var createdInterval = _intervalService.Create(interval);
+
+        if (createdInterval is null)
+        {
+            return StatusCode(500, "Interval creation failed");
+        }
+
+        CreatedAtAction(nameof(Get), new { id = createdInterval.Id }, createdInterval);
+        return createdInterval;
     }
-    
-    [HttpDelete("delete/{id:guid}")]
-    public Interval? Delete(Guid id)
+
+    [HttpPut("update/{id:guid}")]
+    public ActionResult<Interval?> Update(Guid id, Guid userId, [FromBody] IntervalUpdateDto intervalDto)
     {
-        var interval = _repository.Delete(id);
-        return interval;
+        if (id != intervalDto.Id)
+        {
+            return BadRequest("Interval id mismatch");
+        }
+
+        var intervalToUpdate = _intervalService.Get(id);
+
+        if (intervalToUpdate is null)
+        {
+            return NotFound("Interval not found");
+        }
+
+        if (intervalToUpdate.UserId != userId)
+        {
+            return BadRequest("User id mismatch");
+        }
+
+        var interval = new Interval(id, intervalDto.Name, intervalDto.StartTime, intervalDto.EndTime, userId);
+        var updatedInterval = _intervalService.Update(interval);
+
+        if (updatedInterval is null)
+        {
+            return StatusCode(500, "Interval creation failed");
+        }
+
+        Ok(updatedInterval);
+        return updatedInterval;
+    }
+
+    [HttpDelete("delete/{id:guid}")]
+    public ActionResult<Interval?> Delete(Guid id)
+    {
+        var intervalToDelete = _intervalService.Get(id);
+
+        if (intervalToDelete is null)
+        {
+            return NotFound("Interval not found");
+        }
+
+        Ok(intervalToDelete);
+        return intervalToDelete;
     }
 }
