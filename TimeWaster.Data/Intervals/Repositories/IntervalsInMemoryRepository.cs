@@ -17,24 +17,16 @@ public class IntervalsInMemoryRepository : IIntervalsRepository
     {
         return _context.Intervals
             .AsNoTracking()
-            .Select(interval => new Interval(
-                interval.Id,
-                interval.Name,
-                interval.StartTime,
-                interval.EndTime,
-                interval.UserId))
+            .Select(interval => interval.CreateCoreModel())
             .AsEnumerable();
     }
 
     public Interval? Get(Guid id)
     {
-        var interval = _context.Intervals
+        return _context.Intervals
             .AsNoTracking()
-            .FirstOrDefault(interval => interval.Id == id);
-
-        return interval is not null
-            ? new Interval(interval.Id, interval.Name, interval.StartTime, interval.EndTime, interval.UserId)
-            : null;
+            .FirstOrDefault(interval => interval.Id == id)
+            ?.CreateCoreModel();
     }
 
     public IEnumerable<Interval> GetByUser(Guid userId)
@@ -42,12 +34,23 @@ public class IntervalsInMemoryRepository : IIntervalsRepository
         return _context.Intervals
             .AsNoTracking()
             .Where(interval => interval.UserId == userId)
-            .Select(interval => new Interval(
-                interval.Id,
-                interval.Name,
-                interval.StartTime,
-                interval.EndTime,
-                interval.UserId));
+            .Select(interval => interval.CreateCoreModel());
+    }
+
+    public IEnumerable<Interval> GetByUsersInDate(Guid userId, DateOnly date)
+    {
+        return _context.Intervals
+            .AsNoTracking()
+            .Where(interval => interval.UserId == userId && DateOnly.FromDateTime(interval.StartTime) == date)
+            .Select(interval => interval.CreateCoreModel());
+    }
+
+    public Interval? GetOpen(Guid userId)
+    {
+        return _context.Intervals
+            .AsNoTracking()
+            .FirstOrDefault(interval => interval.UserId == userId && !interval.EndTime.HasValue)
+            ?.CreateCoreModel();
     }
 
     public Interval? Create(Interval interval)

@@ -3,7 +3,7 @@
 public class IntervalUpdateDto
 {
     public required Guid Id { get; set; }
-    public required string Name { get; set; }
+    public  string? Name { get; set; }
     public required DateTime StartTime { get; set; }
-    public required DateTime EndTime { get; set; }
+    public  DateTime? EndTime { get; set; }
 }

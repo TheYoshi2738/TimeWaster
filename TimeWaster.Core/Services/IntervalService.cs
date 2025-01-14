@@ -32,7 +32,27 @@ public class IntervalService
         {
             throw new InvalidOperationException("Interval already exists");
         }
-        
+
+        var intervalsByDate =
+            _intervalsRepository.GetByUsersInDate(interval.UserId, DateOnly.FromDateTime(interval.StartTime)).ToList();
+
+
+        if (intervalsByDate.Count == 0) return _intervalsRepository.Create(interval);
+
+        if (intervalsByDate.FirstOrDefault(oldInterval =>
+                oldInterval.StartTime < interval.StartTime
+                && oldInterval.EndTime > interval.StartTime) is not null)
+        {
+            return null;
+        }
+
+        if (intervalsByDate.FirstOrDefault(oldInterval =>
+                oldInterval.StartTime < interval.EndTime
+                && oldInterval.EndTime > interval.EndTime) is not null)
+        {
+            return null;
+        }
+
         return _intervalsRepository.Create(interval);
     }
 
@@ -41,6 +61,31 @@ public class IntervalService
         var intervalToUpdate = _intervalsRepository.Get(interval.Id);
 
         return intervalToUpdate is null ? null : _intervalsRepository.Update(interval);
+    }
+
+    public Interval? Open(Guid userId)
+    {
+        if (_intervalsRepository.GetOpen(userId) is not null)
+        {
+            return null;
+        }
+
+        return Create(Interval.Create(userId, DateTime.Now));
+    }
+
+    public Interval? Close(Guid userId, string name)
+    {
+        var intervalToUpdate = _intervalsRepository.GetOpen(userId);
+
+        if (intervalToUpdate is null)
+        {
+            return null;
+        }
+
+        intervalToUpdate.SetEndTime(DateTime.Now);
+        intervalToUpdate.SetName(name);
+
+        return _intervalsRepository.Update(intervalToUpdate);
     }
 
     public void Delete(Guid id)

@@ -15,13 +15,24 @@ public class Interval
         var interval = new Interval(userId)
         {
             StartTime = startTime,
-            Name = name,
-            EndTime = endTime
+            Name = name
         };
+
+        if (endTime.HasValue)
+        {
+            interval.SetEndTime(endTime.Value);
+        }
+        
         return interval;
     }
     
     private Interval(Guid userId)
+    {
+        Id = Guid.NewGuid();
+        UserId = userId;
+    }
+    
+    private Interval(Guid id, Guid userId)
     {
         Id = Guid.NewGuid();
         UserId = userId;
@@ -32,8 +43,12 @@ public class Interval
         Id = id;
         Name = name;
         StartTime = startTime;
-        EndTime = endTime;
         UserId = userId;
+        
+        if (endTime.HasValue)
+        {
+            SetEndTime(endTime.Value);
+        }
     }
 
     public void SetName(string name)
@@ -51,6 +66,7 @@ public class Interval
 
     public void SetEndTime(DateTime endTime)
     {
+        //от exception'ов надо избавляться, все-таки это тумач
         if (endTime < StartTime)
             throw new ArgumentException("End time cannot be earlier than start time.");
         
