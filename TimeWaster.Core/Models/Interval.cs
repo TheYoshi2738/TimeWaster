@@ -58,7 +58,7 @@ public class Interval
 
     public void SetStartTime(DateTime startTime)
     {
-        if (startTime > DateTime.Now)
+        if (startTime > DateTime.UtcNow)
             throw new ArgumentException("Start time cannot be later than now.");
         
         StartTime = startTime;

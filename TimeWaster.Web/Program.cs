@@ -14,10 +14,10 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<TimeWasterDbContext>(options =>
 {
-    options.UseInMemoryDatabase("TimeWaster");
+    options.UseNpgsql("User Id=postgres;Password=qwerty1234;Host=localhost;Port=5432;Database=timewaster;");
 });
-builder.Services.AddScoped<IIntervalsRepository, IntervalsInMemoryRepository>();
-builder.Services.AddScoped<IUsersRepository, UsersInMemoryRepository>();
+builder.Services.AddScoped<IIntervalsRepository, IntervalsPostgreSqlRepository>();
+builder.Services.AddScoped<IUsersRepository, UsersPostgreSqlRepository>();
 builder.Services.AddScoped<IntervalService>();
 builder.Services.AddScoped<UserService>();
 
@@ -31,7 +31,6 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
 app.MapControllers();
 
 app.Run();

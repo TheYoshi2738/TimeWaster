@@ -69,8 +69,8 @@ public class IntervalService
         {
             return null;
         }
-
-        return Create(Interval.Create(userId, DateTime.Now));
+        
+        return Create(Interval.Create(userId, DateTime.UtcNow));
     }
 
     public Interval? Close(Guid userId, string name)
@@ -82,7 +82,7 @@ public class IntervalService
             return null;
         }
 
-        intervalToUpdate.SetEndTime(DateTime.Now);
+        intervalToUpdate.SetEndTime(DateTime.UtcNow);
         intervalToUpdate.SetName(name);
 
         return _intervalsRepository.Update(intervalToUpdate);

@@ -11,5 +11,26 @@ public class TimeWasterDbContext : DbContext
 
     public TimeWasterDbContext(DbContextOptions<TimeWasterDbContext> options) : base(options)
     {
+        Database.EnsureCreated();
+    }
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        modelBuilder.ApplyConfiguration(new UserDbModelConfiguration());
+        modelBuilder.ApplyConfiguration(new IntervalDbModelConfiguration());
+        
+        base.OnModelCreating(modelBuilder);
+    }
+
+    public override int SaveChanges()
+    {
+        foreach (var entry in ChangeTracker.Entries())
+        {
+            if (entry.Entity is not IntervalDbModel dbModel) continue;
+            dbModel.StartTime = dbModel.StartTime.ToUniversalTime();
+            dbModel.EndTime = dbModel.EndTime?.ToUniversalTime();
+        }
+            
+        return base.SaveChanges();
     }
 }
