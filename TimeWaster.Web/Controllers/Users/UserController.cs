@@ -17,9 +17,9 @@ public class UserController : ControllerBase
     }
 
     [HttpGet]
-    public IEnumerable<User> GetAll()
+    public ActionResult<IEnumerable<User>> GetAll()
     {
-        return _userService.GetAll();
+        return Ok(_userService.GetAll());
     }
 
     [HttpGet("{id:guid}")]
@@ -32,8 +32,7 @@ public class UserController : ControllerBase
             return NotFound("User not found");
         }
 
-        Ok(user);
-        return user;
+        return Ok(user);
     }
 
     [HttpPost("create")]
@@ -53,8 +52,7 @@ public class UserController : ControllerBase
             return StatusCode(500, "User creation failed");
         }
 
-        CreatedAtAction(nameof(Get), new { id = createdUser.Id }, createdUser);
-        return createdUser;
+        return CreatedAtAction(nameof(Get), new { id = createdUser.Id }, createdUser);
     }
 
     [HttpPut("update/{id:guid}")]
@@ -80,8 +78,7 @@ public class UserController : ControllerBase
             return StatusCode(500, "User update failed");
         }
 
-        Ok(updatedUser);
-        return updatedUser;
+        return Ok(updatedUser);
     }
 
     [HttpDelete("delete/{id:guid}")]
@@ -100,8 +97,7 @@ public class UserController : ControllerBase
         {
             return StatusCode(500, "User delete failed");
         }
-        
-        Ok();
-        return userToDelete;
+
+        return Ok();
     }
 }

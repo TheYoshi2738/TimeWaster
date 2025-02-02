@@ -19,11 +19,10 @@ public class IntervalController : ControllerBase
     }
 
     [HttpGet]
-    public IEnumerable<Interval> GetAll()
+    public ActionResult<IEnumerable<Interval>> GetAll()
     {
         var intervals = _intervalService.GetAll();
-        Ok(intervals);
-        return intervals;
+        return Ok(intervals);
     }
 
     [HttpGet("{id:guid}")]
@@ -35,8 +34,7 @@ public class IntervalController : ControllerBase
             return NotFound("Interval not found");
         }
 
-        Ok(interval);
-        return interval;
+        return Ok(interval);
     }
 
     [HttpPost("create")]
@@ -52,19 +50,11 @@ public class IntervalController : ControllerBase
         var createdInterval = _intervalService.Create(interval);
 
         if (createdInterval is null)
-        { 
-            //Короче все общение между сервисом и контроллером
-            //должно быть через ModelState проперти и прочие штуки
-            //- отдельный объект, который существует в сервисе и в контроллере.
-            //Контроллер держит его как свое поле,
-            //сервис делает какие-то изменения, далее возвращается в контроллер,
-            //а тот смотрит на свое поле и проверяет все ли ок
+        {
             return StatusCode(500, "Interval creation failed");
         }
 
-        //в location в header ничего не пишется
-        CreatedAtAction(nameof(Get), new { id = createdInterval.Id }, createdInterval);
-        return createdInterval;
+        return CreatedAtAction(nameof(Get), new { id = createdInterval.Id }, createdInterval);
     }
 
     [HttpPut("update/{id:guid}")]
@@ -95,8 +85,7 @@ public class IntervalController : ControllerBase
             return StatusCode(500, "Interval creation failed");
         }
 
-        Ok(updatedInterval);
-        return updatedInterval;
+        return Ok(updatedInterval);
     }
 
     [HttpDelete("delete/{id:guid}")]
@@ -109,8 +98,7 @@ public class IntervalController : ControllerBase
             return NotFound("Interval not found");
         }
 
-        Ok(intervalToDelete);
-        return intervalToDelete;
+        return Ok(intervalToDelete);
     }
 
     [HttpPost("open")]
@@ -127,11 +115,10 @@ public class IntervalController : ControllerBase
         {
             return StatusCode(500, "Interval open failed");
         }
-        
-        Ok(interval);
-        return interval;
+
+        return CreatedAtAction(nameof(Get), new { id = interval.Id }, interval);
     }
-    
+
     [HttpPost("close")]
     public ActionResult<Interval?> Close(Guid userId, string name)
     {
@@ -141,8 +128,7 @@ public class IntervalController : ControllerBase
         {
             return StatusCode(500, "Interval closed failed");
         }
-        
-        Ok(closedInterval);
-        return closedInterval;
+
+        return Ok(closedInterval);
     }
 }
