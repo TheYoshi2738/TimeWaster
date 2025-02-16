@@ -7,6 +7,8 @@ public class IntervalDbModelConfiguration : IEntityTypeConfiguration<IntervalDbM
 {
     public void Configure(EntityTypeBuilder<IntervalDbModel> builder)
     {
+        builder.ToTable("intervals");
+        
         builder.HasKey(interval => interval.Id);
 
         builder
@@ -14,8 +16,10 @@ public class IntervalDbModelConfiguration : IEntityTypeConfiguration<IntervalDbM
             .WithMany(user => user.Intervals)
             .HasForeignKey(interval => interval.UserId);
 
-        builder.Property(interval => interval.UserId).IsRequired();
-        builder.Property(interval => interval.StartTime);
-        builder.Property(interval => interval.EndTime);
+        builder.Property(interval => interval.Id).HasColumnName("id");
+        builder.Property(interval => interval.Name).HasColumnName("name");
+        builder.Property(interval => interval.UserId).HasColumnName("user_id").IsRequired();
+        builder.Property(interval => interval.StartTime).HasColumnName("start_time");
+        builder.Property(interval => interval.EndTime).HasColumnName("end_time");
     }
 }

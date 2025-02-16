@@ -9,6 +9,8 @@ public class UserDbModelConfiguration : IEntityTypeConfiguration<UserDbModel>
 {
     public void Configure(EntityTypeBuilder<UserDbModel> builder)
     {
+        builder.ToTable("users");
+        
         builder.HasKey(user => user.Id);
 
         builder
@@ -16,6 +18,8 @@ public class UserDbModelConfiguration : IEntityTypeConfiguration<UserDbModel>
             .WithOne(interval => interval.User)
             .HasForeignKey(interval => interval.UserId);
 
-        builder.Property(user => user.Login);
+        builder.Property(user => user.Id).HasColumnName("id");
+        builder.Property(user => user.Login).HasColumnName("login");
+        builder.Property(user => user.Name).HasColumnName("name");
     }
 }
