@@ -2,6 +2,7 @@
 using TimeWaster.Core.Models;
 using TimeWaster.Core.Services;
 using TimeWaster.Web.Controllers.Users.Dto;
+using TimeWaster.Web.Controllers.Users.Extensions;
 
 namespace TimeWaster.Web.Controllers.Users;
 
@@ -17,13 +18,13 @@ public class UserController : ControllerBase
     }
 
     [HttpGet]
-    public ActionResult<IEnumerable<User>> GetAll()
+    public ActionResult<IEnumerable<UserDto>> GetAll()
     {
-        return Ok(_userService.GetAll());
+        return Ok(_userService.GetAll().Select(user => user.ToDto()));
     }
 
     [HttpGet("{id:guid}")]
-    public ActionResult<User?> Get(Guid id)
+    public ActionResult<UserDto?> Get(Guid id)
     {
         var user = _userService.Get(id);
 
@@ -32,11 +33,24 @@ public class UserController : ControllerBase
             return NotFound("User not found");
         }
 
-        return Ok(user);
+        return Ok(user.ToDto());
+    }
+
+    [HttpGet("login/{login}")]
+    public ActionResult<UserDto?> GetByLogin(string login)
+    {
+        var user = _userService.GetByLogin(login);
+
+        if (user is null)
+        {
+            return NotFound("User not found");
+        }
+
+        return Ok(user.ToDto());
     }
 
     [HttpPost("create")]
-    public ActionResult<User?> Create([FromBody] UserCreateDto userDto)
+    public ActionResult<UserDto?> Create([FromBody] UserCreateDto userDto)
     {
         var newUser = Core.Models.User.Create(userDto.Login, userDto.Name);
 
@@ -52,11 +66,11 @@ public class UserController : ControllerBase
             return StatusCode(500, "User creation failed");
         }
 
-        return CreatedAtAction(nameof(Get), new { id = createdUser.Id }, createdUser);
+        return CreatedAtAction(nameof(Get), new { id = createdUser.Id }, createdUser.ToDto());
     }
 
     [HttpPut("update/{id:guid}")]
-    public ActionResult<User?> Update(Guid id, [FromBody] UserUpdateDto userDto)
+    public ActionResult<UserDto?> Update(Guid id, [FromBody] UserUpdateDto userDto)
     {
         if (id != userDto.Id)
         {
@@ -78,11 +92,11 @@ public class UserController : ControllerBase
             return StatusCode(500, "User update failed");
         }
 
-        return Ok(updatedUser);
+        return Ok(updatedUser.ToDto());
     }
 
     [HttpDelete("delete/{id:guid}")]
-    public ActionResult<User?> Delete(Guid id)
+    public ActionResult<UserDto?> Delete(Guid id)
     {
         var userToDelete = _userService.Get(id);
 

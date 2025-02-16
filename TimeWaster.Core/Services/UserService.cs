@@ -20,6 +20,10 @@ public class UserService
     {
         return _usersRepository.Get(userId);
     }
+    public User? GetByLogin(string login)
+    {
+        return _usersRepository.GetByLogin(login);
+    }
 
     public User? Create(User user)
     {

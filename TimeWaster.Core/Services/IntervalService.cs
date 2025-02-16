@@ -21,7 +21,7 @@ public class IntervalService
         return _intervalsRepository.Get(id);
     }
 
-    public IEnumerable<Interval>? GetByUserId(Guid userId)
+    public IEnumerable<Interval> GetByUserId(Guid userId)
     {
         return _intervalsRepository.GetByUser(userId);
     }

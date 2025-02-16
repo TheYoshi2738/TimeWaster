@@ -2,6 +2,7 @@
 using TimeWaster.Core.Services;
 using TimeWaster.Core.Models;
 using TimeWaster.Web.Controllers.Intervals.Dto;
+using TimeWaster.Web.Controllers.Intervals.Extensions;
 
 namespace TimeWaster.Web.Controllers.Intervals;
 
@@ -19,14 +20,14 @@ public class IntervalController : ControllerBase
     }
 
     [HttpGet]
-    public ActionResult<IEnumerable<Interval>> GetAll()
+    public ActionResult<IEnumerable<IntervalDto>> GetAll()
     {
         var intervals = _intervalService.GetAll();
         return Ok(intervals);
     }
 
     [HttpGet("{id:guid}")]
-    public ActionResult<Interval?> Get(Guid id)
+    public ActionResult<IntervalDto?> Get(Guid id)
     {
         var interval = _intervalService.Get(id);
         if (interval is null)
@@ -34,11 +35,18 @@ public class IntervalController : ControllerBase
             return NotFound("Interval not found");
         }
 
-        return Ok(interval);
+        return Ok(interval.ToDto());
+    }
+
+    [HttpGet("user/{userId:guid}")]
+    public ActionResult<IEnumerable<IntervalDto>> GetByUserId(Guid userId)
+    {
+        var interval = _intervalService.GetByUserId(userId);
+        return Ok(interval.Select(i => i.ToDto()));
     }
 
     [HttpPost("create")]
-    public ActionResult<Interval?> Create([FromBody] IntervalCreateDto intervalDto, Guid userId)
+    public ActionResult<IntervalDto?> Create([FromBody] IntervalCreateDto intervalDto, Guid userId)
     {
         if (_userService.Get(userId) is null)
         {
@@ -54,11 +62,11 @@ public class IntervalController : ControllerBase
             return StatusCode(500, "Interval creation failed");
         }
 
-        return CreatedAtAction(nameof(Get), new { id = createdInterval.Id }, createdInterval);
+        return CreatedAtAction(nameof(Get), new { id = createdInterval.Id }, createdInterval.ToDto());
     }
 
     [HttpPut("update/{id:guid}")]
-    public ActionResult<Interval?> Update(Guid id, Guid userId, [FromBody] IntervalUpdateDto intervalDto)
+    public ActionResult<IntervalDto?> Update(Guid id, Guid userId, [FromBody] IntervalUpdateDto intervalDto)
     {
         if (id != intervalDto.Id)
         {
@@ -85,11 +93,11 @@ public class IntervalController : ControllerBase
             return StatusCode(500, "Interval creation failed");
         }
 
-        return Ok(updatedInterval);
+        return Ok(updatedInterval.ToDto());
     }
 
     [HttpDelete("delete/{id:guid}")]
-    public ActionResult<Interval?> Delete(Guid id)
+    public ActionResult<IntervalDto?> Delete(Guid id)
     {
         var intervalToDelete = _intervalService.Get(id);
 
@@ -98,11 +106,11 @@ public class IntervalController : ControllerBase
             return NotFound("Interval not found");
         }
 
-        return Ok(intervalToDelete);
+        return Ok(intervalToDelete.ToDto());
     }
 
     [HttpPost("open")]
-    public ActionResult<Interval?> Open(Guid userId)
+    public ActionResult<IntervalDto?> Open(Guid userId)
     {
         if (_userService.Get(userId) is null)
         {
@@ -116,11 +124,11 @@ public class IntervalController : ControllerBase
             return StatusCode(500, "Interval open failed");
         }
 
-        return CreatedAtAction(nameof(Get), new { id = interval.Id }, interval);
+        return CreatedAtAction(nameof(Get), new { id = interval.Id }, interval.ToDto());
     }
 
     [HttpPost("close")]
-    public ActionResult<Interval?> Close(Guid userId, string name)
+    public ActionResult<IntervalDto?> Close(Guid userId, string name)
     {
         var closedInterval = _intervalService.Close(userId, name);
 
@@ -129,6 +137,6 @@ public class IntervalController : ControllerBase
             return StatusCode(500, "Interval closed failed");
         }
 
-        return Ok(closedInterval);
+        return Ok(closedInterval.ToDto());
     }
 }
