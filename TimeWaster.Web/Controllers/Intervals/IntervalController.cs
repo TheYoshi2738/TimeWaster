@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using TimeWaster.Core.Services;
 using TimeWaster.Core.Models;
+using TimeWaster.Core.Services.IntervalProcessing;
+using TimeWaster.Core.Services.UserProcessing;
 using TimeWaster.Web.Controllers.Intervals.Dto;
 using TimeWaster.Web.Controllers.Intervals.Extensions;
 
@@ -10,10 +11,10 @@ namespace TimeWaster.Web.Controllers.Intervals;
 [Route("intervals")]
 public class IntervalController : ControllerBase
 {
-    private readonly IntervalService _intervalService;
+    private readonly IIntervalService _intervalService;
     private readonly UserService _userService;
 
-    public IntervalController(IntervalService intervalService, UserService userService)
+    public IntervalController(IIntervalService intervalService, UserService userService)
     {
         _intervalService = intervalService;
         _userService = userService;

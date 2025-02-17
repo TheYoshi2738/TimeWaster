@@ -1,8 +1,8 @@
 ﻿using TimeWaster.Core.Models;
 
-namespace TimeWaster.Core.Services;
+namespace TimeWaster.Core.Services.IntervalProcessing;
 
-public class IntervalService
+public class IntervalService : IIntervalService
 {
     private readonly IIntervalsRepository _intervalsRepository;
 

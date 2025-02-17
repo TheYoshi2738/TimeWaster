@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using TimeWaster.Core;
 using TimeWaster.Core.Models;
+using TimeWaster.Core.Services.UserProcessing;
 
 namespace TimeWaster.Data.Users.Repositories;
 
