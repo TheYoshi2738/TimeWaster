@@ -1,5 +1,5 @@
-using TimeWaster.Core;
-using TimeWaster.Core.Services;
+using TimeWaster.Core.Services.IntervalProcessing;
+using TimeWaster.Core.Services.UserProcessing;
 using TimeWaster.Data;
 using TimeWaster.Data.Intervals.Repositories;
 using TimeWaster.Data.Users.Repositories;
@@ -19,8 +19,8 @@ builder.Services.AddDbContext<TimeWasterDbContext>();
 
 builder.Services.AddScoped<IIntervalsRepository, IntervalsPostgreSqlRepository>();
 builder.Services.AddScoped<IUsersRepository, UsersPostgreSqlRepository>();
-builder.Services.AddScoped<IntervalService>();
-builder.Services.AddScoped<UserService>();
+builder.Services.AddScoped<IIntervalService, IntervalService>();
+builder.Services.AddScoped<IUserService, UserService>();
 
 builder.Services.AddControllers().AddJsonOptions(options => options.JsonSerializerOptions.Converters.Add(new DateTimeToUtcConverter()));
 
