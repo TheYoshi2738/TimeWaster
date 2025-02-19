@@ -20,8 +20,12 @@ public class UserController : ControllerBase
     [HttpGet]
     public ActionResult<IEnumerable<UserDto>> GetAll()
     {
-        var users = _userService.GetAll().Value?.Select(user => user.ToDto());
-        return users is null ? NotFound() : Ok(users);
+        if (_userService.GetAll().Value is { } users)
+        {
+            return Ok(users.Select(u => u.ToDto()));
+        }
+
+        return NotFound();
     }
 
     [HttpGet("{id:guid}")]
@@ -55,19 +59,19 @@ public class UserController : ControllerBase
     {
         var user = Core.Models.User.Create(userDto.Login, userDto.Name);
 
-        var userCreateResult = _userService.Create(user);
+        var createResult = _userService.Create(user);
 
-        if (userCreateResult is { IsSuccess: true, Value: { } createdUser })
+        if (createResult is { IsSuccess: true, Value: { } createdUser })
         {
             return CreatedAtAction(nameof(Get), new { id = createdUser.Id }, createdUser.ToDto());
         }
 
-        switch (userCreateResult.ErrorMessage)
+        switch (createResult.ErrorMessage)
         {
             case "Login is not unique":
-                return BadRequest(userCreateResult.ErrorMessage);
+                return BadRequest(createResult.ErrorMessage);
             default:
-                return StatusCode(500, userCreateResult.ErrorMessage); 
+                return StatusCode(500, createResult.ErrorMessage); 
         }
     }
 
@@ -80,40 +84,40 @@ public class UserController : ControllerBase
         }
 
         var user = new User(userDto.Id, userDto.Login, userDto.Name, null);
-        var userUpdateResult = _userService.Update(user);
+        var updateResult = _userService.Update(user);
         
-        if (userUpdateResult is { IsSuccess: true, Value: { } updatedUser })
+        if (updateResult is { IsSuccess: true, Value: { } updatedUser })
         {
             return Ok(updatedUser.ToDto());
         }
 
-        switch (userUpdateResult.ErrorMessage)
+        switch (updateResult.ErrorMessage)
         {
             case "User not found":
                 return NotFound("User not found");
             default: 
-                return StatusCode(500, userUpdateResult.ErrorMessage);
+                return StatusCode(500, updateResult.ErrorMessage);
         }
     }
 
     [HttpDelete("delete/{id:guid}")]
     public ActionResult<UserDto?> Delete(Guid id)
     {
-        var userDeleteResult = _userService.Delete(id);
+        var deleteResult = _userService.Delete(id);
 
-        if (userDeleteResult is { IsSuccess: true })
+        if (deleteResult is { IsSuccess: true })
         {
             return NoContent();
         }
 
-        switch (userDeleteResult.ErrorMessage)
+        switch (deleteResult.ErrorMessage)
         {
             case "User not found":
-                return NotFound(userDeleteResult.ErrorMessage);
+                return NotFound(deleteResult.ErrorMessage);
             case "User delete failed":
-                return BadRequest(userDeleteResult.ErrorMessage);
+                return BadRequest(deleteResult.ErrorMessage);
             default:
-                return StatusCode(500, userDeleteResult.ErrorMessage);
+                return StatusCode(500, deleteResult.ErrorMessage);
         }
     }
 }

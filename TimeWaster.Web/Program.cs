@@ -1,5 +1,3 @@
-using TimeWaster.Core;
-using TimeWaster.Core.Services;
 using TimeWaster.Core.Services.IntervalProcessing;
 using TimeWaster.Core.Services.UserProcessing;
 using TimeWaster.Data;

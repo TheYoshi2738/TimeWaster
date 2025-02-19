@@ -4,13 +4,13 @@ namespace TimeWaster.Core.Services.IntervalProcessing;
 
 public interface IIntervalService
 {
-    public IEnumerable<Interval> GetAll();
-    public Interval? Get(Guid id);
-    public IEnumerable<Interval> GetByUserId(Guid id);
-    public Interval? Create(Interval interval);
-    public Interval? Update(Interval interval);
-    public Interval? Open(Guid userId);
-    public Interval? Close(Guid userId, string name);
-    public void Delete(Guid id);
+    public Result<IEnumerable<Interval>> GetAll();
+    public Result<Interval?> Get(Guid id);
+    public Result<IEnumerable<Interval>> GetByUserId(Guid id);
+    public Result<Interval?> Create(Interval interval);
+    public Result<Interval?> Update(Interval interval);
+    public Result<Interval?> Open(Guid userId);
+    public Result<Interval?> Close(Guid userId, string name);
+    public Result<Interval?> Delete(Guid id);
     
 }
