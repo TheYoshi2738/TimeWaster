@@ -1,6 +1,6 @@
 ﻿using TimeWaster.Core.Models;
 
-namespace TimeWaster.Core;
+namespace TimeWaster.Core.Services.UserProcessing;
 
 public interface IUsersRepository
 {
