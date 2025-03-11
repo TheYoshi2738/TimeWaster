@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using TimeWaster.Core.Models;
 using TimeWaster.Core.Services.IntervalProcessing;
-using TimeWaster.Core.Services.UserProcessing;
 using TimeWaster.Web.Controllers.Intervals.Dto;
 using TimeWaster.Web.Controllers.Intervals.Extensions;
 

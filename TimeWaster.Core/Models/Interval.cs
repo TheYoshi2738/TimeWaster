@@ -72,4 +72,16 @@ public class Interval
         
         EndTime = endTime;
     }
+
+    public bool IsValidTimeBounds()
+    {
+        if (!EndTime.HasValue)
+        {
+            return StartTime < DateTime.UtcNow;
+        }
+
+        return StartTime < EndTime
+               && StartTime < DateTime.UtcNow
+               && EndTime < DateTime.UtcNow;
+    }
 }

@@ -47,6 +47,11 @@ public class IntervalService : IIntervalService
             return Result<Interval?>.Failure("User not found");
         }
 
+        if (!interval.IsValidTimeBounds())
+        {
+            return Result<Interval?>.Failure("Invalid time bounds is not valid. Start time later than end time or time is in the future.");
+        }
+
         var intervalsByDate = _intervalsRepository
             .GetByUsersInDate(interval.UserId, DateOnly.FromDateTime(interval.StartTime))
             .ToList();
@@ -131,8 +136,8 @@ public class IntervalService : IIntervalService
     private static TimeBoundsValidateResult ValidateTimeBounds(List<Interval> userIntervals, Interval interval)
     {
         if (userIntervals.FirstOrDefault(existInterval =>
-                existInterval.StartTime < interval.StartTime
-                && interval.EndTime < existInterval.EndTime) is not null)
+                existInterval.StartTime <= interval.StartTime
+                && interval.EndTime <= existInterval.EndTime) is not null)
         {
             return new TimeBoundsValidateResult()
             {
